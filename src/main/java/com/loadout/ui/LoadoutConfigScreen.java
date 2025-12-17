@@ -21,7 +21,11 @@ public class LoadoutConfigScreen {
         
         ConfigBuilder builder = ConfigBuilder.create()
                 .setParentScreen(parent)
-                .setTitle(Text.translatable("text.autoconfig.loadout.title"));
+                .setTitle(Text.translatable("text.autoconfig.loadout.title"))
+                .setSavingRunnable(() -> {
+                    // Save slot profiles when config is saved
+                    LoadoutClient.saveSlotProfiles();
+                });
         
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
         

@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {
@@ -20,13 +19,19 @@ public class ClientPlayerEntityMixin {
         }
     }
     
-    @Inject(method = "attack", at = @At("HEAD"))
-    private void loadout$attack(CallbackInfo ci) {
+    @Inject(method = "swingHand", at = @At("HEAD"))
+    private void loadout$swingHand(CallbackInfo ci) {
         loadout$lastAttackedTicks = 20; // 1 second cooldown
     }
     
-    @Inject(method = "getItemUseCooldown", at = @At("RETURN"), cancellable = true)
-    private void loadout$getItemUseCooldown(CallbackInfoReturnable<Integer> cir) {
+    @Inject(method = "closeHandledScreen", at = @At("HEAD"))
+    private void loadout$closeHandledScreen(CallbackInfo ci) {
         // This injection might not work as intended, but it's an example of how we could extend functionality
+    }
+    
+    // Add a getter method for accessing the field from our code
+    @Unique
+    public int loadout$getLastAttackedTicks() {
+        return loadout$lastAttackedTicks;
     }
 }

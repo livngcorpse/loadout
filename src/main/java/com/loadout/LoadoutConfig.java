@@ -1,47 +1,73 @@
 package com.loadout;
 
-import com.loadout.ui.LoadoutConfigScreen;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
-import net.minecraft.client.gui.screen.Screen;
 
-@Config(name = LoadoutClient.MOD_ID)
+import java.util.ArrayList;
+import java.util.List;
+
+@Config(name = "loadout")
 public class LoadoutConfig implements ConfigData {
     
-    @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     public ActivationMode activationMode = ActivationMode.MANUAL_ONLY;
     
-    @ConfigEntry.Gui.Tooltip
     public boolean enableHotbarManagement = false;
-    
-    @ConfigEntry.Gui.Tooltip
     public boolean enableArmorManagement = false;
-    
-    @ConfigEntry.Gui.Tooltip
     public boolean enableOffhandManagement = false;
     
-    @ConfigEntry.Gui.Tooltip(count = 2)
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
     public int respawnDelayTicks = 20;
     
-    @ConfigEntry.Gui.Tooltip(count = 2)
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
     public int cooldownTicks = 10;
     
-    public enum ActivationMode implements SelectionListEntry.Translatable {
+    // Slot profiles for persistence
+    public List<SlotProfileData> hotbarSlots = new ArrayList<>();
+    public List<SlotProfileData> armorSlots = new ArrayList<>();
+    public SlotProfileData offhandSlot = new SlotProfileData();
+    
+    public enum ActivationMode {
         MANUAL_ONLY,
         RESPAWN_ONLY,
         PICKUP_ONLY,
-        ALL_EVENTS;
-        
-        @Override
-        public String getKey() {
-            return "text.autoconfig.loadout.option.activationMode." + this.name().toLowerCase();
-        }
+        ALL_EVENTS
     }
     
-    public Screen getConfigScreen(Screen parent) {
-        return LoadoutConfigScreen.create(parent);
+    // Data class for serializing SlotProfile
+    public static class SlotProfileData {
+        public int slotIndex = 0;
+        public String[] allowedItems = new String[0];
+        public SlotProfile.MaterialPriority materialPriority = SlotProfile.MaterialPriority.NONE;
+        public SlotProfile.DurabilityPreference durabilityPreference = SlotProfile.DurabilityPreference.NONE;
+        public boolean considerEnchantments = false;
+        public boolean enforceSingleItem = false;
+        public boolean locked = false;
+        
+        public SlotProfileData() {}
+        
+        public SlotProfileData(SlotProfile profile) {
+            this.slotIndex = profile.getSlotIndex();
+            this.allowedItems = profile.getAllowedItems().toArray(new String[0]);
+            this.materialPriority = profile.getMaterialPriority();
+            this.durabilityPreference = profile.getDurabilityPreference();
+            this.considerEnchantments = profile.isConsiderEnchantments();
+            this.enforceSingleItem = profile.isEnforceSingleItem();
+            this.locked = profile.isLocked();
+        }
+        
+        public void applyTo(SlotProfile profile) {
+            profile.setSlotIndex(slotIndex);
+            profile.getAllowedItems().clear();
+            for (String item : allowedItems) {
+                profile.addAllowedItem(item);
+            }
+            profile.setMaterialPriority(materialPriority);
+            profile.setDurabilityPreference(durabilityPreference);
+            profile.setConsiderEnchantments(considerEnchantments);
+            profile.setEnforceSingleItem(enforceSingleItem);
+            profile.setLocked(locked);
+        }
     }
 }

@@ -38,7 +38,7 @@ public class ItemSwapper {
                 0, // Left click
                 SlotActionType.PICKUP,
                 carriedItem,
-                screenHandler.getCreativeStack()
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupPacket);
@@ -52,7 +52,7 @@ public class ItemSwapper {
                 0, // Left click
                 SlotActionType.PICKUP,
                 ItemStack.EMPTY,
-                screenHandler.getCreativeStack()
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placePacket);
@@ -88,7 +88,7 @@ public class ItemSwapper {
                 0, // Left click
                 SlotActionType.PICKUP,
                 itemA,
-                screenHandler.getCreativeStack()
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupAPacket);
@@ -102,7 +102,7 @@ public class ItemSwapper {
                 0, // Left click
                 SlotActionType.PICKUP,
                 itemB,
-                screenHandler.getCreativeStack()
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeAPacket);
@@ -116,7 +116,7 @@ public class ItemSwapper {
                 0, // Left click
                 SlotActionType.PICKUP,
                 itemB,
-                screenHandler.getCreativeStack()
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupBPacket);
@@ -130,7 +130,7 @@ public class ItemSwapper {
                 0, // Left click
                 SlotActionType.PICKUP,
                 ItemStack.EMPTY,
-                screenHandler.getCreativeStack()
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeBPacket);

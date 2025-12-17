@@ -1,6 +1,5 @@
 package com.loadout;
 
-import com.loadout.mixin.ClientPlayerEntityAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
@@ -18,9 +17,15 @@ public class SafetyChecker {
     public static boolean isInCombat(ClientPlayerEntity player) {
         // Check if the player has recently attacked an entity
         // Using our custom mixin to track attack cooldown
-        ClientPlayerEntityAccessor accessor = (ClientPlayerEntityAccessor) player;
-        if (accessor.getLastAttackedTicks() > 0) {
-            return true;
+        try {
+            // Access the mixin field through reflection to get the getter method
+            java.lang.reflect.Method method = player.getClass().getMethod("loadout$getLastAttackedTicks");
+            int lastAttackedTicks = (int) method.invoke(player);
+            if (lastAttackedTicks > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            // If we can't access the method, fall back to other checks
         }
         
         // Check if the player is being attacked
