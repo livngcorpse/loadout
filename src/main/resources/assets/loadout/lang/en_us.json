@@ -1,0 +1,48 @@
+{
+	"category.loadout.loadout": "Loadout",
+	"key.loadout.reload_loadout": "Reload Loadout",
+	
+	"text.autoconfig.loadout.title": "Loadout Configuration",
+	"text.autoconfig.loadout.category.general": "General",
+	
+	"text.autoconfig.loadout.option.activationMode": "Activation Mode",
+	"text.autoconfig.loadout.option.activationMode.manual_only": "Manual Only",
+	"text.autoconfig.loadout.option.activationMode.respawn_only": "Respawn Only",
+	"text.autoconfig.loadout.option.activationMode.pickup_only": "Pickup Only",
+	"text.autoconfig.loadout.option.activationMode.all_events": "All Events",
+	
+	"text.autoconfig.loadout.option.enableHotbarManagement": "Enable Hotbar Management",
+	"text.autoconfig.loadout.option.enableHotbarManagement.@Tooltip": "Enable automatic organization of the hotbar",
+	
+	"text.autoconfig.loadout.option.enableArmorManagement": "Enable Armor Management",
+	"text.autoconfig.loadout.option.enableArmorManagement.@Tooltip": "Enable automatic equipping of armor",
+	
+	"text.autoconfig.loadout.option.enableOffhandManagement": "Enable Offhand Management",
+	"text.autoconfig.loadout.option.enableOffhandManagement.@Tooltip": "Enable automatic setting of offhand items",
+	
+	"text.autoconfig.loadout.option.respawnDelayTicks": "Respawn Delay (Ticks)",
+	"text.autoconfig.loadout.option.respawnDelayTicks.@Tooltip": "Delay before organizing loadout after respawning",
+	"text.autoconfig.loadout.option.respawnDelayTicks.@Tooltip[1]": "20 ticks = 1 second",
+	
+	"text.autoconfig.loadout.option.cooldownTicks": "Cooldown (Ticks)",
+	"text.autoconfig.loadout.option.cooldownTicks.@Tooltip": "Minimum time between loadout organizations",
+	"text.autoconfig.loadout.option.cooldownTicks.@Tooltip[1]": "Prevents rapid reorganization",
+	
+	"text.autoconfig.loadout.option.materialPriority": "Material Priority",
+	"text.autoconfig.loadout.option.materialPriority.none": "None",
+	"text.autoconfig.loadout.option.materialPriority.wood": "Wood",
+	"text.autoconfig.loadout.option.materialPriority.stone": "Stone",
+	"text.autoconfig.loadout.option.materialPriority.iron": "Iron",
+	"text.autoconfig.loadout.option.materialPriority.gold": "Gold",
+	"text.autoconfig.loadout.option.materialPriority.diamond": "Diamond",
+	"text.autoconfig.loadout.option.materialPriority.netherite": "Netherite",
+	
+	"text.autoconfig.loadout.option.durabilityPreference": "Durability Preference",
+	"text.autoconfig.loadout.option.durabilityPreference.none": "None",
+	"text.autoconfig.loadout.option.durabilityPreference.highest": "Highest",
+	"text.autoconfig.loadout.option.durabilityPreference.lowest": "Lowest",
+	
+	"text.autoconfig.loadout.option.considerEnchantments": "Consider Enchantments",
+	"text.autoconfig.loadout.option.enforceSingleItem": "Enforce Single Item",
+	"text.autoconfig.loadout.option.locked": "Locked"
+}

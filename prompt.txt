@@ -1,0 +1,201 @@
+🧩 Mod Name
+
+Loadout
+
+Tagline (internal):
+Smart hotbar, armor, and offhand management with fully customizable rules.
+
+📁 Folder Structure (Fabric · Client-side)
+loadout/
+├─ build.gradle
+├─ settings.gradle
+├─ gradle.properties
+├─ gradlew
+├─ gradlew.bat
+├─ gradle/
+│  └─ wrapper/
+│     ├─ gradle-wrapper.jar
+│     └─ gradle-wrapper.properties
+│
+└─ src/
+   └─ main/
+      ├─ java/
+      │  └─ com/
+      │     └─ loadout/
+      │        ├─ LoadoutClient.java        # Fabric client initializer
+      │        ├─ LoadoutConfig.java        # Cloth Config schema
+      │        ├─ SlotProfile.java          # Per-slot rule definition
+      │        ├─ InventoryScanner.java     # Inventory parsing
+      │        ├─ ItemEvaluator.java        # Rule-based item scoring
+      │        ├─ HotbarController.java     # Slot assignment logic
+      │        ├─ ArmorController.java      # Auto armor handling
+      │        ├─ OffhandController.java    # Offhand logic
+      │        ├─ EventListener.java        # Pickup & respawn hooks
+      │        └─ ui/
+      │           ├─ LoadoutConfigScreen.java
+      │           └─ SlotEditorWidget.java
+      │
+      └─ resources/
+         ├─ fabric.mod.json
+         ├─ loadout.mixins.json
+         └─ assets/
+            └─ loadout/
+               ├─ lang/
+               │  └─ en_us.json
+               └─ icon.png
+
+⚙️ Target & Constraints
+
+Minecraft versions: 1.20.10+ ONLY
+
+Mod loader: Fabric
+
+Environment: Client-side only
+
+Dependencies:
+
+Fabric API
+
+Cloth Config
+
+(Optional) Mod Menu
+
+No server-side logic
+
+No gameplay advantage beyond automation
+
+No default behavior enabled
+
+🧠 Core Behavior Summary
+
+Loadout automatically:
+
+Organizes the 9-slot hotbar
+
+Equips armor
+
+Sets offhand items
+
+…based entirely on user-defined rules, triggered when:
+
+The player respawns
+
+Items are picked up
+
+Inventory changes (debounced)
+
+A manual hotkey is used
+
+🎛️ Customization Rules (High-Level)
+
+Each hotbar slot is independently configurable:
+
+Allowed items or item categories
+
+Material priority (Netherite, Diamond, etc.)
+
+Durability preference (highest / lowest)
+
+Enchantment influence (on/off or weighted)
+
+Single-item enforcement (e.g. one bed only)
+
+Slot locking
+
+Armor and offhand follow similar rule logic.
+
+🖥️ Configuration UI Requirements
+
+Built using Cloth Config
+
+Slot-based editor
+
+Per-slot rule toggles
+
+No presets or defaults
+
+All behavior is opt-in
+
+Changes apply immediately
+
+Clear visual layout matching the hotbar
+
+🛡️ Safety & UX Rules
+
+No swapping during:
+
+Item usage
+
+Attack animations
+
+Short delay after respawn
+
+Cooldown between reorganizations
+
+Manual override keybind
+
+Never delete or duplicate items
+
+🧠 MASTER PROMPT (Clean & Final)
+
+Copy exactly as-is:
+
+You are an expert Minecraft Fabric mod developer.
+
+Create a complete, production-ready Fabric CLIENT-SIDE mod named “Loadout” for Minecraft versions 1.20.10 and above.
+
+MOD PURPOSE:
+Loadout automatically organizes the player’s hotbar, equips armor, and assigns offhand items based on fully user-defined rules whenever items are picked up or the player respawns.
+
+SCOPE & CONSTRAINTS:
+- Client-side only
+- Fabric API
+- Minecraft 1.20.10+
+- Cloth Config for all configuration
+- No server-side code
+- No default behavior; everything must be opt-in
+
+HOTBAR SYSTEM:
+- 9 hotbar slots
+- Each slot is independently configurable
+- Slot rules include:
+  - Allowed items or item categories
+  - Material priority
+  - Durability preference
+  - Enchantment consideration
+  - Single-item enforcement
+  - Slot locking
+
+ARMOR & OFFHAND:
+- Automatically equip armor based on user rules
+- Automatically select offhand items
+- Respect durability, material, and enchantment preferences
+
+EVENT TRIGGERS:
+- Player respawn
+- Item pickup
+- Inventory changes (debounced)
+- Manual hotkey activation
+
+CONFIGURATION UI:
+- Built with Cloth Config
+- Slot-based editor
+- Per-slot rule toggles
+- No presets or forced defaults
+- Changes apply instantly
+
+UX & SAFETY:
+- Do not swap items during combat or item usage
+- Add cooldowns to prevent flickering
+- Delay execution briefly after respawn
+- Never destroy or duplicate items
+
+DELIVERABLES:
+- Complete source code
+- Proper Fabric project structure
+- fabric.mod.json
+- Clean, commented implementation
+- Buildable project with no placeholder logic
+
+QUALITY BAR:
+The mod should feel minimal, polished, and professional — focused purely on quality-of-life improvements.

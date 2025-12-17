@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "loadout",
+	"version": "${version}",
+	"name": "Loadout",
+	"description": "Smart hotbar, armor, and offhand management with fully customizable rules.",
+	"authors": [
+		"Your Name"
+	],
+	"contact": {
+		"homepage": "https://github.com/yourname/loadout",
+		"sources": "https://github.com/yourname/loadout"
+	},
+	"license": "MIT",
+	"icon": "assets/loadout/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.loadout.LoadoutClient"
+		],
+		"modmenu": [
+			"com.loadout.LoadoutConfig"
+		]
+	},
+	"mixins": [
+		"loadout.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"fabric": "*",
+		"minecraft": ">=1.20.10",
+		"java": ">=17",
+		"cloth-config": ">=11.0.0"
+	},
+	"suggests": {
+		"modmenu": ">=7.2.0"
+	}
+}
