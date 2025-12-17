@@ -19,8 +19,8 @@ public class InventoryScanner {
     public static List<ItemStack> scanInventory(PlayerInventory inventory, SlotProfile profile) {
         List<ItemStack> matchingItems = new ArrayList<>();
         
-        // Scan main inventory (excluding hotbar)
-        for (int i = 9; i < inventory.main.size(); i++) {
+        // Scan main inventory (including hotbar now)
+        for (int i = 0; i < inventory.main.size(); i++) {
             ItemStack stack = inventory.main.get(i);
             if (!stack.isEmpty() && matchesProfile(stack, profile)) {
                 matchingItems.add(stack.copy());
@@ -65,11 +65,10 @@ public class InventoryScanner {
         if (profile.getMaterialPriority() != SlotProfile.MaterialPriority.NONE) {
             SlotProfile.MaterialPriority itemMaterial = MaterialMapper.getMaterialPriority(stack);
             // If the item doesn't match the required material priority, exclude it
-            // (unless we're allowing any material)
+            if (itemMaterial != profile.getMaterialPriority() && itemMaterial != SlotProfile.MaterialPriority.NONE) {
+                return false;
+            }
         }
-        
-        // For now, we'll include all items that pass the allowed items check
-        // Additional filtering can be added here as needed
         
         return true;
     }

@@ -15,7 +15,8 @@ import net.minecraft.text.Text;
 public class LoadoutConfigScreen {
     
     public static Screen create(Screen parent) {
-        ConfigHolder<LoadoutConfig> holder = AutoConfig.register(LoadoutConfig.class, GsonConfigSerializer::new);
+        // Only register the config once, get the existing holder
+        ConfigHolder<LoadoutConfig> holder = AutoConfig.getConfigHolder(LoadoutConfig.class);
         LoadoutConfig config = holder.getConfig();
         
         ConfigBuilder builder = ConfigBuilder.create()

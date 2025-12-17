@@ -21,6 +21,7 @@ public class EventListener {
     
     private int respawnTimer = 0;
     private int cooldownTimer = 0;
+    private boolean wasDead = false;
     
     public EventListener() {
         this.hotbarController = LoadoutClient.getHotbarController();
@@ -37,7 +38,7 @@ public class EventListener {
             onClientTick(client);
         });
         
-        // Register respawn event
+        // Register connection event for initial join
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Set timer to organize loadout after initial join/spawn
             LoadoutConfig config = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig();
@@ -62,9 +63,25 @@ public class EventListener {
     }
     
     /**
-     * Called each client tick to handle timers
+     * Called each client tick to handle timers and check for respawn
      */
     public void onClientTick(MinecraftClient client) {
+        // Check for player death/respawn
+        if (client.player != null) {
+            boolean isDead = client.player.isDead();
+            
+            // If player was dead and is now alive, they respawned
+            if (wasDead && !isDead) {
+                LoadoutConfig config = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig();
+                if (config.activationMode == LoadoutConfig.ActivationMode.RESPAWN_ONLY || 
+                    config.activationMode == LoadoutConfig.ActivationMode.ALL_EVENTS) {
+                    respawnTimer = config.respawnDelayTicks;
+                }
+            }
+            
+            wasDead = isDead;
+        }
+        
         // Handle respawn timer
         if (respawnTimer > 0) {
             respawnTimer--;

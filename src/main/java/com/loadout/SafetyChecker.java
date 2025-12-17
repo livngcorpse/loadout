@@ -1,11 +1,10 @@
 package com.loadout;
 
+import com.loadout.mixin.ClientPlayerEntityAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 
@@ -19,9 +18,10 @@ public class SafetyChecker {
     public static boolean isInCombat(ClientPlayerEntity player) {
         // Check if the player has recently attacked an entity
         // Using our custom mixin to track attack cooldown
-        // if (player.getLastAttackedTicks() < 20) { // Within last second
-        //     return true;
-        // }
+        ClientPlayerEntityAccessor accessor = (ClientPlayerEntityAccessor) player;
+        if (accessor.getLastAttackedTicks() > 0) {
+            return true;
+        }
         
         // Check if the player is being attacked
         if (player.hurtTime > 0) {

@@ -3,7 +3,8 @@
 	"package": "com.loadout.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
-		"ClientPlayerEntityMixin"
+		"ClientPlayerEntityMixin",
+		"ClientPlayerEntityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -3,8 +3,12 @@ package com.loadout;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 public class OffhandController {
     private final SlotProfile offhandProfile;
@@ -72,7 +76,7 @@ public class OffhandController {
      * @return The slot index, or -1 if not found
      */
     private int findItemSlot(PlayerInventory inventory, ItemStack targetItem) {
-        // Check main inventory
+        // Check main inventory including hotbar
         for (int i = 0; i < inventory.main.size(); i++) {
             ItemStack stack = inventory.main.get(i);
             if (ItemStack.areEqual(stack, targetItem)) {
@@ -90,27 +94,17 @@ public class OffhandController {
         for (int i = 0; i < inventory.armor.size(); i++) {
             ItemStack armorStack = inventory.armor.get(i);
             if (ItemStack.areEqual(armorStack, targetItem)) {
-                return inventory.main.size() + i; // Armor slots come after main inventory
+                // Armor slots in screen handler are indexed after main inventory and hotbar
+                int hotbarSize = 9;
+                int mainInventorySize = inventory.main.size() - hotbarSize;
+                return hotbarSize + mainInventorySize + i;
             }
         }
         
         return -1; // Not found
     }
     
-    /**
-     * Gets the slot profile for the offhand
-     * @return The slot profile for the offhand
-     */
     public SlotProfile getOffhandProfile() {
         return offhandProfile;
-    }
-    
-    /**
-     * Sets the slot profile for the offhand
-     * @param profile The slot profile to set
-     */
-    public void setOffhandProfile(SlotProfile profile) {
-        // We keep the same profile object but update its properties
-        // This preserves any references to the profile
     }
 }

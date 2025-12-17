@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+// Fixing imports for 1.20.10+
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
@@ -26,32 +27,32 @@ public class ItemSwapper {
         ScreenHandler screenHandler = player.currentScreenHandler;
         
         // Send packet to move item
-        short transactionId = screenHandler.nextRevision();
+        int revision = screenHandler.getRevision();
         ItemStack carriedItem = inventory.getStack(fromSlot).copy();
         
         // Send click packet to pick up the item
         ClickSlotC2SPacket pickupPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                transactionId,
+                revision,
                 fromSlot,
                 0, // Left click
                 SlotActionType.PICKUP,
                 carriedItem,
-                screenHandler.getRevision()
+                screenHandler.getCreativeStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupPacket);
         
         // Send click packet to place the item
-        transactionId = screenHandler.nextRevision();
+        revision = screenHandler.getRevision();
         ClickSlotC2SPacket placePacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                transactionId,
+                revision,
                 toSlot,
                 0, // Left click
                 SlotActionType.PICKUP,
                 ItemStack.EMPTY,
-                screenHandler.getRevision()
+                screenHandler.getCreativeStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placePacket);
@@ -79,57 +80,57 @@ public class ItemSwapper {
         ItemStack itemB = inventory.getStack(slotB).copy();
         
         // Move item A to cursor
-        short transactionId = screenHandler.nextRevision();
+        int revision = screenHandler.getRevision();
         ClickSlotC2SPacket pickupAPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                transactionId,
+                revision,
                 slotA,
                 0, // Left click
                 SlotActionType.PICKUP,
                 itemA,
-                screenHandler.getRevision()
+                screenHandler.getCreativeStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupAPacket);
         
         // Move item A to slot B
-        transactionId = screenHandler.nextRevision();
+        revision = screenHandler.getRevision();
         ClickSlotC2SPacket placeAPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                transactionId,
+                revision,
                 slotB,
                 0, // Left click
                 SlotActionType.PICKUP,
                 itemB,
-                screenHandler.getRevision()
+                screenHandler.getCreativeStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeAPacket);
         
         // Move item B to cursor
-        transactionId = screenHandler.nextRevision();
+        revision = screenHandler.getRevision();
         ClickSlotC2SPacket pickupBPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                transactionId,
+                revision,
                 slotB,
                 0, // Left click
                 SlotActionType.PICKUP,
                 itemB,
-                screenHandler.getRevision()
+                screenHandler.getCreativeStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupBPacket);
         
         // Move item B to slot A
-        transactionId = screenHandler.nextRevision();
+        revision = screenHandler.getRevision();
         ClickSlotC2SPacket placeBPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                transactionId,
+                revision,
                 slotA,
                 0, // Left click
                 SlotActionType.PICKUP,
                 ItemStack.EMPTY,
-                screenHandler.getRevision()
+                screenHandler.getCreativeStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeBPacket);

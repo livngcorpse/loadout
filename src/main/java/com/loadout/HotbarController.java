@@ -2,10 +2,14 @@ package com.loadout;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+// PlayerInventory is accessed through player.getInventory()
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 public class HotbarController {
     private final SlotProfile[] hotbarProfiles;
@@ -50,6 +54,12 @@ public class HotbarController {
             // Scan inventory for matching items
             List<ItemStack> matchingItems = InventoryScanner.scanInventory(inventory, profile);
             
+            // If single item enforcement is enabled across the entire hotbar,
+            // filter out items that already exist in other hotbar slots
+            if (profile.isEnforceSingleItem()) {
+                filterItemsAlreadyInHotbar(matchingItems, inventory);
+            }
+            
             // Rank items based on profile criteria
             matchingItems = ItemEvaluator.rankItems(matchingItems, profile);
             
@@ -65,7 +75,7 @@ public class HotbarController {
                     // If there was an item in the hotbar slot, move it to an empty slot
                     if (!currentItem.isEmpty()) {
                         int emptySlot = ItemSwapper.findEmptySlot(inventory);
-                        if (emptySlot != -1) {
+                        if (emptySlot != -1 && emptySlot != slotIndex) {
                             ItemSwapper.moveItem(player, slotIndex, emptySlot);
                         }
                     }
@@ -75,13 +85,36 @@ public class HotbarController {
     }
     
     /**
+     * Filters out items that already exist in other hotbar slots
+     * @param items The list of items to filter
+     * @param inventory The player's inventory
+     */
+    private void filterItemsAlreadyInHotbar(List<ItemStack> items, PlayerInventory inventory) {
+        // Create a set of item identifiers that are already in hotbar slots
+        Set<String> hotbarItemIds = new HashSet<>();
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = inventory.getStack(i);
+            if (!stack.isEmpty()) {
+                Identifier itemId = Registries.ITEM.getId(stack.getItem());
+                hotbarItemIds.add(itemId.toString());
+            }
+        }
+        
+        // Remove items that are already in hotbar slots
+        items.removeIf(stack -> {
+            Identifier itemId = Registries.ITEM.getId(stack.getItem());
+            return hotbarItemIds.contains(itemId.toString());
+        });
+    }
+    
+    /**
      * Finds the slot containing a specific item stack
      * @param inventory The player's inventory
      * @param targetItem The item stack to find
      * @return The slot index, or -1 if not found
      */
     private int findItemSlot(PlayerInventory inventory, ItemStack targetItem) {
-        // Check main inventory
+        // Check main inventory including hotbar
         for (int i = 0; i < inventory.main.size(); i++) {
             ItemStack stack = inventory.main.get(i);
             if (ItemStack.areEqual(stack, targetItem)) {
@@ -99,7 +132,10 @@ public class HotbarController {
         for (int i = 0; i < inventory.armor.size(); i++) {
             ItemStack armorStack = inventory.armor.get(i);
             if (ItemStack.areEqual(armorStack, targetItem)) {
-                return inventory.main.size() + i; // Armor slots come after main inventory
+                // Armor slots in screen handler are indexed after main inventory and hotbar
+                int hotbarSize = 9;
+                int mainInventorySize = inventory.main.size() - hotbarSize;
+                return hotbarSize + mainInventorySize + i;
             }
         }
         

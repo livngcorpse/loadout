@@ -1,8 +1,9 @@
 package com.loadout;
 
-import net.minecraft.item.*;
-import net.minecraft.item.ArmorMaterials;
-import net.minecraft.item.ToolMaterials;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
@@ -94,7 +95,8 @@ public class MaterialMapper {
         // Check if it's an armor item
         if (stack.getItem() instanceof ArmorItem) {
             ArmorItem armorItem = (ArmorItem) stack.getItem();
-            switch (armorItem.getMaterial().getName()) {
+            String materialName = armorItem.getMaterial().getName();
+            switch (materialName) {
                 case "leather":
                     return SlotProfile.MaterialPriority.NONE; // Leather is not in our priority system
                 case "chainmail":
@@ -115,22 +117,20 @@ public class MaterialMapper {
         // Check if it's a tool item
         if (stack.getItem() instanceof ToolItem) {
             ToolItem toolItem = (ToolItem) stack.getItem();
-            if (toolItem.getMaterial() instanceof ToolMaterials) {
-                ToolMaterials material = (ToolMaterials) toolItem.getMaterial();
-                switch (material.toString()) {
-                    case "WOOD":
-                        return SlotProfile.MaterialPriority.WOOD;
-                    case "STONE":
-                        return SlotProfile.MaterialPriority.STONE;
-                    case "IRON":
-                        return SlotProfile.MaterialPriority.IRON;
-                    case "GOLD":
-                        return SlotProfile.MaterialPriority.GOLD;
-                    case "DIAMOND":
-                        return SlotProfile.MaterialPriority.DIAMOND;
-                    case "NETHERITE":
-                        return SlotProfile.MaterialPriority.NETHERITE;
-                }
+            String materialName = toolItem.getMaterial().getName();
+            switch (materialName) {
+                case "wood":
+                    return SlotProfile.MaterialPriority.WOOD;
+                case "stone":
+                    return SlotProfile.MaterialPriority.STONE;
+                case "iron":
+                    return SlotProfile.MaterialPriority.IRON;
+                case "gold":
+                    return SlotProfile.MaterialPriority.GOLD;
+                case "diamond":
+                    return SlotProfile.MaterialPriority.DIAMOND;
+                case "netherite":
+                    return SlotProfile.MaterialPriority.NETHERITE;
             }
         }
         

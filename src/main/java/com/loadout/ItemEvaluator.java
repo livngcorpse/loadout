@@ -1,9 +1,12 @@
 package com.loadout;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class ItemEvaluator {
     
@@ -86,17 +89,21 @@ public class ItemEvaluator {
             }
             
             // Compare by enchantment count and level
-            int enchantmentCountA = a.getEnchantments().size();
-            int enchantmentCountB = b.getEnchantments().size();
+            Map<Enchantment, Integer> enchantmentsA = EnchantmentHelper.get(a);
+            Map<Enchantment, Integer> enchantmentsB = EnchantmentHelper.get(b);
+            
+            int enchantmentCountA = enchantmentsA.size();
+            int enchantmentCountB = enchantmentsB.size();
             
             if (enchantmentCountA != enchantmentCountB) {
                 return Integer.compare(enchantmentCountB, enchantmentCountA);
             }
             
-            // TODO: More sophisticated enchantment comparison
-            // Could consider enchantment levels, specific enchantments, etc.
+            // If same number of enchantments, compare total enchantment levels
+            int totalLevelA = enchantmentsA.values().stream().mapToInt(Integer::intValue).sum();
+            int totalLevelB = enchantmentsB.values().stream().mapToInt(Integer::intValue).sum();
             
-            return 0;
+            return Integer.compare(totalLevelB, totalLevelA);
         }
         
         private float getDurabilityRatio(ItemStack stack) {
