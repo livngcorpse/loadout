@@ -5,11 +5,11 @@
 	"name": "Loadout",
 	"description": "Smart hotbar, armor, and offhand management with fully customizable rules.",
 	"authors": [
-		"Your Name"
+		"Team Loadout"
 	],
 	"contact": {
-		"homepage": "https://github.com/yourname/loadout",
-		"sources": "https://github.com/yourname/loadout"
+		"homepage": "https://github.com/livngcorpse/loadout",
+		"sources": "https://github.com/livngcorpse/loadout"
 	},
 	"license": "MIT",
 	"icon": "assets/loadout/icon.png",
@@ -19,7 +19,7 @@
 			"com.loadout.LoadoutClient"
 		],
 		"modmenu": [
-			"com.loadout.LoadoutConfig"
+			"com.loadout.ModMenuIntegration"
 		]
 	},
 	"mixins": [

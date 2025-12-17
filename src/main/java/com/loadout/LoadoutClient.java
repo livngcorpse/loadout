@@ -40,7 +40,10 @@ public class LoadoutClient implements ClientModInitializer {
             while (reloadLoadoutKey.wasPressed()) {
                 // Handle manual loadout reload
                 if (client.player != null) {
-                    // TODO: Implement manual loadout reload
+                    // Organize the player's loadout
+                    hotbarController.organizeHotbar(client.player);
+                    armorController.equipArmor(client.player);
+                    offhandController.setOffhandItem(client.player);
                 }
             }
             

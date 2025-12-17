@@ -11,6 +11,12 @@ Smart hotbar, armor, and offhand management with fully customizable rules for Mi
 - Client-side only - no server-side requirements
 - No default behavior - everything is opt-in
 - Safe implementation - never deletes or duplicates items
+- Per-slot item filtering with allowed items list
+- Material priority system (Wood through Netherite)
+- Durability preference (highest/lowest)
+- Enchantment consideration
+- Single-item enforcement
+- Slot locking
 
 ## Installation
 
@@ -50,6 +56,7 @@ Access the configuration screen through Mod Menu or by pressing the configuratio
 
 Each hotbar slot, armor slot, and the offhand can be configured individually with:
 
+- **Allowed Items**: List of item IDs that are allowed in this slot (empty for any item)
 - **Material Priority**: Preferred material type (Wood, Stone, Iron, Gold, Diamond, Netherite)
 - **Durability Preference**: Whether to prefer items with high or low durability
 - **Consider Enchantments**: Whether to factor enchantments into item selection
@@ -70,6 +77,7 @@ Once configured, the mod will automatically organize your loadout based on your 
 - Implements cooldowns to prevent rapid reorganization
 - Delays execution briefly after respawning
 - Never destroys or duplicates items
+- Respects player state (dead, spectator, creative modes)
 
 ## Dependencies
 

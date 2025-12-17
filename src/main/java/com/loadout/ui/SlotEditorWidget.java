@@ -19,7 +19,17 @@ public class SlotEditorWidget {
         ConfigCategory slotCategory = builder.getOrCreateCategory(Text.literal(slotName));
         
         // Allowed items
-        // TODO: Implement item selection UI
+        slotCategory.addEntry(entryBuilder.startStrList(
+                        Text.translatable("text.autoconfig.loadout.option.allowedItems"),
+                        profile.getAllowedItems().toArray(new String[0]))
+                .setDefaultValue(new String[0])
+                .setSaveConsumer(newValue -> {
+                    profile.getAllowedItems().clear();
+                    for (String item : newValue) {
+                        profile.addAllowedItem(item);
+                    }
+                })
+                .build());
         
         // Material priority
         slotCategory.addEntry(entryBuilder.startEnumSelector(

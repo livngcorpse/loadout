@@ -23,6 +23,11 @@ public class HotbarController {
      * @param player The player whose hotbar to organize
      */
     public void organizeHotbar(ClientPlayerEntity player) {
+        // Check if it's safe to organize the loadout
+        if (!SafetyChecker.isSafeToOrganize(player)) {
+            return;
+        }
+        
         PlayerInventory inventory = player.getInventory();
         
         // Process each hotbar slot
@@ -51,10 +56,54 @@ public class HotbarController {
             // If we found matching items, place the best one in the slot
             if (!matchingItems.isEmpty()) {
                 ItemStack bestItem = matchingItems.get(0);
-                // TODO: Implement item swapping logic
-                // This would involve moving items between slots
+                // Find the slot where this item is currently located
+                int sourceSlot = findItemSlot(inventory, bestItem);
+                if (sourceSlot != -1 && sourceSlot != slotIndex) {
+                    // Move the best item to the hotbar slot
+                    ItemSwapper.moveItem(player, sourceSlot, slotIndex);
+                    
+                    // If there was an item in the hotbar slot, move it to an empty slot
+                    if (!currentItem.isEmpty()) {
+                        int emptySlot = ItemSwapper.findEmptySlot(inventory);
+                        if (emptySlot != -1) {
+                            ItemSwapper.moveItem(player, slotIndex, emptySlot);
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    /**
+     * Finds the slot containing a specific item stack
+     * @param inventory The player's inventory
+     * @param targetItem The item stack to find
+     * @return The slot index, or -1 if not found
+     */
+    private int findItemSlot(PlayerInventory inventory, ItemStack targetItem) {
+        // Check main inventory
+        for (int i = 0; i < inventory.main.size(); i++) {
+            ItemStack stack = inventory.main.get(i);
+            if (ItemStack.areEqual(stack, targetItem)) {
+                return i;
+            }
+        }
+        
+        // Check offhand
+        ItemStack offhandStack = inventory.offHand.get(0);
+        if (ItemStack.areEqual(offhandStack, targetItem)) {
+            return PlayerInventory.OFF_HAND_SLOT;
+        }
+        
+        // Check armor slots
+        for (int i = 0; i < inventory.armor.size(); i++) {
+            ItemStack armorStack = inventory.armor.get(i);
+            if (ItemStack.areEqual(armorStack, targetItem)) {
+                return inventory.main.size() + i; // Armor slots come after main inventory
+            }
+        }
+        
+        return -1; // Not found
     }
     
     /**

@@ -1,6 +1,8 @@
 package com.loadout.ui;
 
+import com.loadout.LoadoutClient;
 import com.loadout.LoadoutConfig;
+import com.loadout.SlotProfile;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -72,7 +74,22 @@ public class LoadoutConfigScreen {
                 .setSaveConsumer(newValue -> config.cooldownTicks = newValue)
                 .build());
         
-        // TODO: Add slot-based configuration entries
+        // Hotbar slot configuration
+        for (int i = 0; i < 9; i++) {
+            SlotProfile profile = LoadoutClient.getHotbarController().getSlotProfile(i);
+            SlotEditorWidget.addSlotConfiguration(builder, profile, "Hotbar Slot " + (i + 1));
+        }
+        
+        // Armor slot configuration
+        String[] armorNames = {"Helmet", "Chestplate", "Leggings", "Boots"};
+        for (int i = 0; i < 4; i++) {
+            SlotProfile profile = LoadoutClient.getArmorController().getArmorProfile(i);
+            SlotEditorWidget.addSlotConfiguration(builder, profile, armorNames[i] + " Slot");
+        }
+        
+        // Offhand configuration
+        SlotProfile offhandProfile = LoadoutClient.getOffhandController().getOffhandProfile();
+        SlotEditorWidget.addSlotConfiguration(builder, offhandProfile, "Offhand Slot");
         
         return builder.build();
     }

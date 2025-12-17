@@ -1,5 +1,6 @@
 package com.loadout;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ public class SlotProfile {
     
     public SlotProfile(int slotIndex) {
         this.slotIndex = slotIndex;
+        this.allowedItems = new HashSet<>();
         this.materialPriority = MaterialPriority.NONE;
         this.durabilityPreference = DurabilityPreference.NONE;
         this.considerEnchantments = false;
@@ -36,6 +38,18 @@ public class SlotProfile {
     
     public void setAllowedItems(Set<String> allowedItems) {
         this.allowedItems = allowedItems;
+    }
+    
+    public void addAllowedItem(String itemId) {
+        this.allowedItems.add(itemId);
+    }
+    
+    public void removeAllowedItem(String itemId) {
+        this.allowedItems.remove(itemId);
+    }
+    
+    public boolean isItemAllowed(String itemId) {
+        return this.allowedItems.isEmpty() || this.allowedItems.contains(itemId);
     }
     
     public MaterialPriority getMaterialPriority() {

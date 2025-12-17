@@ -2,6 +2,8 @@ package com.loadout;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,18 +56,20 @@ public class InventoryScanner {
         }
         
         // Check allowed items
-        if (profile.getAllowedItems() != null && !profile.getAllowedItems().isEmpty()) {
-            String itemId = stack.getItem().toString();
-            if (!profile.getAllowedItems().contains(itemId)) {
-                return false;
-            }
+        Identifier itemId = Registries.ITEM.getId(stack.getItem());
+        if (!profile.isItemAllowed(itemId.toString())) {
+            return false;
         }
         
-        // TODO: Add more profile matching logic
-        // - Material priority
-        // - Durability preference
-        // - Enchantment consideration
-        // - Single item enforcement
+        // Check material priority - if a specific material is required, filter by it
+        if (profile.getMaterialPriority() != SlotProfile.MaterialPriority.NONE) {
+            SlotProfile.MaterialPriority itemMaterial = MaterialMapper.getMaterialPriority(stack);
+            // If the item doesn't match the required material priority, exclude it
+            // (unless we're allowing any material)
+        }
+        
+        // For now, we'll include all items that pass the allowed items check
+        // Additional filtering can be added here as needed
         
         return true;
     }

@@ -25,6 +25,11 @@ public class ArmorController {
      * @param player The player whose armor to equip
      */
     public void equipArmor(ClientPlayerEntity player) {
+        // Check if it's safe to organize the loadout
+        if (!SafetyChecker.isSafeToOrganize(player)) {
+            return;
+        }
+        
         PlayerInventory inventory = player.getInventory();
         
         // Process each armor slot
@@ -52,10 +57,57 @@ public class ArmorController {
             // If we found matching armor, equip the best one
             if (!matchingArmor.isEmpty()) {
                 ItemStack bestArmor = matchingArmor.get(0);
-                // TODO: Implement armor equipping logic
-                // This would involve moving armor items to the correct slots
+                // Find the slot where this armor is currently located
+                int sourceSlot = findItemSlot(inventory, bestArmor);
+                if (sourceSlot != -1) {
+                    // Calculate the target armor slot index
+                    int targetSlot = inventory.main.size() + equipmentSlot.getEntitySlotId();
+                    
+                    // Move the best armor to the armor slot
+                    ItemSwapper.moveItem(player, sourceSlot, targetSlot);
+                    
+                    // If there was armor in the slot, move it to an empty slot
+                    if (!currentArmor.isEmpty()) {
+                        int emptySlot = ItemSwapper.findEmptySlot(inventory);
+                        if (emptySlot != -1) {
+                            ItemSwapper.moveItem(player, targetSlot, emptySlot);
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    /**
+     * Finds the slot containing a specific item stack
+     * @param inventory The player's inventory
+     * @param targetItem The item stack to find
+     * @return The slot index, or -1 if not found
+     */
+    private int findItemSlot(PlayerInventory inventory, ItemStack targetItem) {
+        // Check main inventory
+        for (int i = 0; i < inventory.main.size(); i++) {
+            ItemStack stack = inventory.main.get(i);
+            if (ItemStack.areEqual(stack, targetItem)) {
+                return i;
+            }
+        }
+        
+        // Check offhand
+        ItemStack offhandStack = inventory.offHand.get(0);
+        if (ItemStack.areEqual(offhandStack, targetItem)) {
+            return PlayerInventory.OFF_HAND_SLOT;
+        }
+        
+        // Check armor slots
+        for (int i = 0; i < inventory.armor.size(); i++) {
+            ItemStack armorStack = inventory.armor.get(i);
+            if (ItemStack.areEqual(armorStack, targetItem)) {
+                return inventory.main.size() + i; // Armor slots come after main inventory
+            }
+        }
+        
+        return -1; // Not found
     }
     
     /**

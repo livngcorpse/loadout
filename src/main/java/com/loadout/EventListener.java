@@ -3,7 +3,7 @@ package com.loadout;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents; // Changed from server to client event
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.player.PlayerPickupItemCallback;
 import net.minecraft.client.MinecraftClient;
@@ -23,9 +23,9 @@ public class EventListener {
     private int cooldownTimer = 0;
     
     public EventListener() {
-        this.hotbarController = new HotbarController();
-        this.armorController = new ArmorController();
-        this.offhandController = new OffhandController();
+        this.hotbarController = LoadoutClient.getHotbarController();
+        this.armorController = LoadoutClient.getArmorController();
+        this.offhandController = LoadoutClient.getOffhandController();
     }
     
     /**
@@ -40,14 +40,22 @@ public class EventListener {
         // Register respawn event
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             // Set timer to organize loadout after initial join/spawn
-            respawnTimer = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig().respawnDelayTicks;
+            LoadoutConfig config = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig();
+            if (config.activationMode == LoadoutConfig.ActivationMode.RESPAWN_ONLY || 
+                config.activationMode == LoadoutConfig.ActivationMode.ALL_EVENTS) {
+                respawnTimer = config.respawnDelayTicks;
+            }
         });
         
         // Register item pickup event
         PlayerPickupItemCallback.EVENT.register((player, itemStack, unused) -> {
             if (player instanceof ClientPlayerEntity) {
-                // Trigger loadout organization (debounced)
-                triggerLoadoutUpdate();
+                LoadoutConfig config = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig();
+                if (config.activationMode == LoadoutConfig.ActivationMode.PICKUP_ONLY || 
+                    config.activationMode == LoadoutConfig.ActivationMode.ALL_EVENTS) {
+                    // Trigger loadout organization (debounced)
+                    triggerLoadoutUpdate();
+                }
             }
             return ActionResult.PASS;
         });
@@ -91,13 +99,21 @@ public class EventListener {
      * @param player The player whose loadout to organize
      */
     private void organizeLoadout(ClientPlayerEntity player) {
-        // Organize hotbar
-        hotbarController.organizeHotbar(player);
+        LoadoutConfig config = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig();
         
-        // Equip armor
-        armorController.equipArmor(player);
+        // Organize hotbar if enabled
+        if (config.enableHotbarManagement) {
+            hotbarController.organizeHotbar(player);
+        }
         
-        // Set offhand item
-        offhandController.setOffhandItem(player);
+        // Equip armor if enabled
+        if (config.enableArmorManagement) {
+            armorController.equipArmor(player);
+        }
+        
+        // Set offhand item if enabled
+        if (config.enableOffhandManagement) {
+            offhandController.setOffhandItem(player);
+        }
     }
 }

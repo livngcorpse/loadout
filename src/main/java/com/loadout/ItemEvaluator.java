@@ -59,9 +59,7 @@ public class ItemEvaluator {
         }
         
         private int compareByMaterial(ItemStack a, ItemStack b) {
-            // TODO: Implement material priority comparison
-            // This would require mapping items to their material types
-            return 0;
+            return MaterialMapper.compareByMaterialPriority(a, b, profile.getMaterialPriority());
         }
         
         private int compareByDurability(ItemStack a, ItemStack b) {

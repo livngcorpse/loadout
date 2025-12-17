@@ -28,6 +28,9 @@
 	"text.autoconfig.loadout.option.cooldownTicks.@Tooltip": "Minimum time between loadout organizations",
 	"text.autoconfig.loadout.option.cooldownTicks.@Tooltip[1]": "Prevents rapid reorganization",
 	
+	"text.autoconfig.loadout.option.allowedItems": "Allowed Items",
+	"text.autoconfig.loadout.option.allowedItems.@Tooltip": "List of item IDs that are allowed in this slot (empty for any item)",
+	
 	"text.autoconfig.loadout.option.materialPriority": "Material Priority",
 	"text.autoconfig.loadout.option.materialPriority.none": "None",
 	"text.autoconfig.loadout.option.materialPriority.wood": "Wood",
