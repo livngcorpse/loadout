@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.11.+'
+    id 'fabric-loom' version '1.14-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -11,6 +11,7 @@ base {
 }
 
 repositories {
+    maven { url "https://maven.fabricmc.net/" } // REQUIRED for snapshot Loom
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
 }
@@ -37,15 +38,15 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
-}
-
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
     withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
 }
 
 jar {
