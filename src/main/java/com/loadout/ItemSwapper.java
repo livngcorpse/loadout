@@ -26,33 +26,28 @@ public class ItemSwapper {
         PlayerInventory inventory = player.getInventory();
         ScreenHandler screenHandler = player.currentScreenHandler;
         
-        // Send packet to move item
-        int revision = screenHandler.getRevision();
-        ItemStack carriedItem = inventory.getStack(fromSlot).copy();
-        
         // Send click packet to pick up the item
         ClickSlotC2SPacket pickupPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                revision,
+                screenHandler.getRevision(),
                 fromSlot,
                 0, // Left click
                 SlotActionType.PICKUP,
-                carriedItem,
-                screenHandler.getCursorStack()
+                ItemStack.EMPTY,
+                ItemStack.EMPTY
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupPacket);
         
         // Send click packet to place the item
-        revision = screenHandler.getRevision();
         ClickSlotC2SPacket placePacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                revision,
+                screenHandler.getRevision(),
                 toSlot,
                 0, // Left click
                 SlotActionType.PICKUP,
                 ItemStack.EMPTY,
-                screenHandler.getCursorStack()
+                ItemStack.EMPTY
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placePacket);
@@ -75,62 +70,54 @@ public class ItemSwapper {
         PlayerInventory inventory = player.getInventory();
         ScreenHandler screenHandler = player.currentScreenHandler;
         
-        // Get the items to swap
-        ItemStack itemA = inventory.getStack(slotA).copy();
-        ItemStack itemB = inventory.getStack(slotB).copy();
-        
-        // Move item A to cursor
-        int revision = screenHandler.getRevision();
+        // Send click packet to pick up item from slot A
         ClickSlotC2SPacket pickupAPacket = new ClickSlotC2SPacket(
                 screenHandler.syncId,
-                revision,
-                slotA,
-                0, // Left click
-                SlotActionType.PICKUP,
-                itemA,
-                screenHandler.getCursorStack()
-        );
-        
-        MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupAPacket);
-        
-        // Move item A to slot B
-        revision = screenHandler.getRevision();
-        ClickSlotC2SPacket placeAPacket = new ClickSlotC2SPacket(
-                screenHandler.syncId,
-                revision,
-                slotB,
-                0, // Left click
-                SlotActionType.PICKUP,
-                itemB,
-                screenHandler.getCursorStack()
-        );
-        
-        MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeAPacket);
-        
-        // Move item B to cursor
-        revision = screenHandler.getRevision();
-        ClickSlotC2SPacket pickupBPacket = new ClickSlotC2SPacket(
-                screenHandler.syncId,
-                revision,
-                slotB,
-                0, // Left click
-                SlotActionType.PICKUP,
-                itemB,
-                screenHandler.getCursorStack()
-        );
-        
-        MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupBPacket);
-        
-        // Move item B to slot A
-        revision = screenHandler.getRevision();
-        ClickSlotC2SPacket placeBPacket = new ClickSlotC2SPacket(
-                screenHandler.syncId,
-                revision,
+                screenHandler.getRevision(),
                 slotA,
                 0, // Left click
                 SlotActionType.PICKUP,
                 ItemStack.EMPTY,
-                screenHandler.getCursorStack()
+                ItemStack.EMPTY
+        );
+        
+        MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupAPacket);
+        
+        // Send click packet to place item A in slot B
+        ClickSlotC2SPacket placeAPacket = new ClickSlotC2SPacket(
+                screenHandler.syncId,
+                screenHandler.getRevision(),
+                slotB,
+                0, // Left click
+                SlotActionType.PICKUP,
+                ItemStack.EMPTY,
+                ItemStack.EMPTY
+        );
+        
+        MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeAPacket);
+        
+        // Send click packet to pick up item from slot B (now in cursor)
+        ClickSlotC2SPacket pickupBPacket = new ClickSlotC2SPacket(
+                screenHandler.syncId,
+                screenHandler.getRevision(),
+                slotB,
+                0, // Left click
+                SlotActionType.PICKUP,
+                ItemStack.EMPTY,
+                ItemStack.EMPTY
+        );
+        
+        MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupBPacket);
+        
+        // Send click packet to place item B in slot A
+        ClickSlotC2SPacket placeBPacket = new ClickSlotC2SPacket(
+                screenHandler.syncId,
+                screenHandler.getRevision(),
+                slotA,
+                0, // Left click
+                SlotActionType.PICKUP,
+                ItemStack.EMPTY,
+                ItemStack.EMPTY
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeBPacket);

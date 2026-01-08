@@ -11,63 +11,80 @@ import java.util.List;
 public class LoadoutConfig implements ConfigData {
     
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    public ActivationMode activationMode = ActivationMode.MANUAL_ONLY;
+    public ActivationMode activationMode = ActivationMode.PICKUP_ONLY;
     
-    public boolean enableHotbarManagement = false;
-    public boolean enableArmorManagement = false;
-    public boolean enableOffhandManagement = false;
-    
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
-    public int respawnDelayTicks = 20;
-    
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
-    public int cooldownTicks = 10;
-    
-    // Slot profiles for persistence
-    public List<SlotProfileData> hotbarSlots = new ArrayList<>();
-    public List<SlotProfileData> armorSlots = new ArrayList<>();
-    public SlotProfileData offhandSlot = new SlotProfileData();
+    // Slot routing configurations for persistence
+    public List<SlotRoutingConfigData> slotRoutingConfigs = new ArrayList<>();
     
     public enum ActivationMode {
         MANUAL_ONLY,
-        RESPAWN_ONLY,
-        PICKUP_ONLY,
-        ALL_EVENTS
+        PICKUP_ONLY  // Only pickup mode is relevant for item routing
     }
     
-    // Data class for serializing SlotProfile
-    public static class SlotProfileData {
+    // Data class for serializing SlotRoutingConfig
+    public static class SlotRoutingConfigData {
         public int slotIndex = 0;
-        public String[] allowedItems = new String[0];
-        public SlotProfile.MaterialPriority materialPriority = SlotProfile.MaterialPriority.NONE;
-        public SlotProfile.DurabilityPreference durabilityPreference = SlotProfile.DurabilityPreference.NONE;
-        public boolean considerEnchantments = false;
-        public boolean enforceSingleItem = false;
+        public ItemCategory itemCategory = ItemCategory.NONE;
+        public String customItemId = "";
+        public ReplacementMode replacementMode = ReplacementMode.NEVER;
         public boolean locked = false;
         
-        public SlotProfileData() {}
+        public SlotRoutingConfigData() {}
         
-        public SlotProfileData(SlotProfile profile) {
-            this.slotIndex = profile.getSlotIndex();
-            this.allowedItems = profile.getAllowedItems().toArray(new String[0]);
-            this.materialPriority = profile.getMaterialPriority();
-            this.durabilityPreference = profile.getDurabilityPreference();
-            this.considerEnchantments = profile.isConsiderEnchantments();
-            this.enforceSingleItem = profile.isEnforceSingleItem();
-            this.locked = profile.isLocked();
+        public SlotRoutingConfigData(SlotRoutingConfig config) {
+            this.slotIndex = config.getSlotIndex();
+            this.itemCategory = config.getItemCategory();
+            this.customItemId = config.getCustomItemId();
+            this.replacementMode = config.getReplacementMode();
+            this.locked = config.isLocked();
         }
         
-        public void applyTo(SlotProfile profile) {
-            profile.setSlotIndex(slotIndex);
-            profile.getAllowedItems().clear();
-            for (String item : allowedItems) {
-                profile.addAllowedItem(item);
+        public void applyTo(SlotRoutingConfig config) {
+            config.setSlotIndex(slotIndex);
+            config.setItemCategory(itemCategory);
+            config.setCustomItemId(customItemId);
+            config.setReplacementMode(replacementMode);
+            config.setLocked(locked);
+        }
+        
+        public enum ItemCategory {
+            NONE, WEAPON, TOOL, ARMOR, FOOD, BLOCK, POTION, MISC, CUSTOM
+        }
+        
+        public enum ReplacementMode {
+            NEVER, SAME_TYPE_ONLY, ALWAYS
+        }
+    }
+    
+    /**
+     * Gets the array of slot routing configurations
+     * Index mapping: 0-8 hotbar, 9-12 armor, 13 offhand
+     */
+    public SlotRoutingConfig[] getSlotRoutingConfigs() {
+        SlotRoutingConfig[] configs = new SlotRoutingConfig[14]; // 9 hotbar + 4 armor + 1 offhand
+        
+        // Initialize all configs
+        for (int i = 0; i < configs.length; i++) {
+            configs[i] = new SlotRoutingConfig(i);
+        }
+        
+        // Apply loaded configuration data
+        for (SlotRoutingConfigData data : slotRoutingConfigs) {
+            if (data.slotIndex >= 0 && data.slotIndex < configs.length) {
+                data.applyTo(configs[data.slotIndex]);
             }
-            profile.setMaterialPriority(materialPriority);
-            profile.setDurabilityPreference(durabilityPreference);
-            profile.setConsiderEnchantments(considerEnchantments);
-            profile.setEnforceSingleItem(enforceSingleItem);
-            profile.setLocked(locked);
+        }
+        
+        return configs;
+    }
+    
+    /**
+     * Updates the configuration data from the routing configs
+     */
+    public void updateFromSlotRoutingConfigs(SlotRoutingConfig[] configs) {
+        slotRoutingConfigs.clear();
+        for (SlotRoutingConfig config : configs) {
+            slotRoutingConfigs.add(new SlotRoutingConfigData(config));
         }
     }
 }

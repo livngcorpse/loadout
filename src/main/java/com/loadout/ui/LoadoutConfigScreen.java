@@ -2,10 +2,9 @@ package com.loadout.ui;
 
 import com.loadout.LoadoutClient;
 import com.loadout.LoadoutConfig;
-import com.loadout.SlotProfile;
+import com.loadout.SlotRoutingConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -23,8 +22,9 @@ public class LoadoutConfigScreen {
                 .setParentScreen(parent)
                 .setTitle(Text.translatable("text.autoconfig.loadout.title"))
                 .setSavingRunnable(() -> {
-                    // Save slot profiles when config is saved
-                    LoadoutClient.saveSlotProfiles();
+                    // Save slot routing configs when config is saved
+                    SlotRoutingConfig[] configs = config.getSlotRoutingConfigs();
+                    LoadoutClient.saveSlotRoutingConfigs(configs);
                 });
         
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
@@ -36,66 +36,63 @@ public class LoadoutConfigScreen {
                         Text.translatable("text.autoconfig.loadout.option.activationMode"),
                         LoadoutConfig.ActivationMode.class,
                         config.activationMode)
-                .setDefaultValue(LoadoutConfig.ActivationMode.MANUAL_ONLY)
+                .setDefaultValue(LoadoutConfig.ActivationMode.PICKUP_ONLY)
                 .setSaveConsumer(newValue -> config.activationMode = newValue)
                 .build());
         
-        general.addEntry(entryBuilder.startBooleanToggle(
-                        Text.translatable("text.autoconfig.loadout.option.enableHotbarManagement"),
-                        config.enableHotbarManagement)
-                .setDefaultValue(false)
-                .setSaveConsumer(newValue -> config.enableHotbarManagement = newValue)
-                .build());
+        // Slot routing configuration
+        SlotRoutingConfig[] configs = config.getSlotRoutingConfigs();
         
-        general.addEntry(entryBuilder.startBooleanToggle(
-                        Text.translatable("text.autoconfig.loadout.option.enableArmorManagement"),
-                        config.enableArmorManagement)
-                .setDefaultValue(false)
-                .setSaveConsumer(newValue -> config.enableArmorManagement = newValue)
-                .build());
-        
-        general.addEntry(entryBuilder.startBooleanToggle(
-                        Text.translatable("text.autoconfig.loadout.option.enableOffhandManagement"),
-                        config.enableOffhandManagement)
-                .setDefaultValue(false)
-                .setSaveConsumer(newValue -> config.enableOffhandManagement = newValue)
-                .build());
-        
-        general.addEntry(entryBuilder.startIntField(
-                        Text.translatable("text.autoconfig.loadout.option.respawnDelayTicks"),
-                        config.respawnDelayTicks)
-                .setDefaultValue(20)
-                .setMin(0)
-                .setMax(100)
-                .setSaveConsumer(newValue -> config.respawnDelayTicks = newValue)
-                .build());
-        
-        general.addEntry(entryBuilder.startIntField(
-                        Text.translatable("text.autoconfig.loadout.option.cooldownTicks"),
-                        config.cooldownTicks)
-                .setDefaultValue(10)
-                .setMin(0)
-                .setMax(100)
-                .setSaveConsumer(newValue -> config.cooldownTicks = newValue)
-                .build());
-        
-        // Hotbar slot configuration
+        // Hotbar slot configuration (slots 0-8)
         for (int i = 0; i < 9; i++) {
-            SlotProfile profile = LoadoutClient.getHotbarController().getSlotProfile(i);
-            SlotEditorWidget.addSlotConfiguration(builder, profile, "Hotbar Slot " + (i + 1));
+            addSlotRoutingConfiguration(builder, configs[i], "Hotbar Slot " + (i + 1));
         }
         
-        // Armor slot configuration
+        // Armor slot configuration (slots 9-12)
         String[] armorNames = {"Helmet", "Chestplate", "Leggings", "Boots"};
         for (int i = 0; i < 4; i++) {
-            SlotProfile profile = LoadoutClient.getArmorController().getArmorProfile(i);
-            SlotEditorWidget.addSlotConfiguration(builder, profile, armorNames[i] + " Slot");
+            addSlotRoutingConfiguration(builder, configs[i + 9], armorNames[i] + " Slot");
         }
         
-        // Offhand configuration
-        SlotProfile offhandProfile = LoadoutClient.getOffhandController().getOffhandProfile();
-        SlotEditorWidget.addSlotConfiguration(builder, offhandProfile, "Offhand Slot");
+        // Offhand configuration (slot 13)
+        addSlotRoutingConfiguration(builder, configs[13], "Offhand Slot");
         
         return builder.build();
+    }
+    
+    private static void addSlotRoutingConfiguration(ConfigBuilder builder, SlotRoutingConfig config, String slotName) {
+        ConfigEntryBuilder entryBuilder = builder.getEntryBuilder();
+        
+        // Item Category selector
+        builder.getOrCreateCategory(Text.literal(slotName)).addEntry(
+            entryBuilder.startEnumSelector(
+                Text.literal("Item Category"),
+                SlotRoutingConfig.ItemCategory.class,
+                config.getItemCategory())
+            .setDefaultValue(SlotRoutingConfig.ItemCategory.NONE)
+            .setSaveConsumer(newValue -> config.setItemCategory(newValue))
+            .build()
+        );
+        
+        // Replacement Mode selector
+        builder.getOrCreateCategory(Text.literal(slotName)).addEntry(
+            entryBuilder.startEnumSelector(
+                Text.literal("Replacement Mode"),
+                SlotRoutingConfig.ReplacementMode.class,
+                config.getReplacementMode())
+            .setDefaultValue(SlotRoutingConfig.ReplacementMode.NEVER)
+            .setSaveConsumer(newValue -> config.setReplacementMode(newValue))
+            .build()
+        );
+        
+        // Locked toggle
+        builder.getOrCreateCategory(Text.literal(slotName)).addEntry(
+            entryBuilder.startBooleanToggle(
+                Text.literal("Locked"),
+                config.isLocked())
+            .setDefaultValue(false)
+            .setSaveConsumer(newValue -> config.setLocked(newValue))
+            .build()
+        );
     }
 }
