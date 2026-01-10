@@ -29,11 +29,20 @@ public class EventListener {
             if (player instanceof ClientPlayerEntity) {
                 LoadoutConfig config = AutoConfig.getConfigHolder(LoadoutConfig.class).getConfig();
                 if (config.activationMode == LoadoutConfig.ActivationMode.PICKUP_ONLY) {
-                    // Route the picked up item immediately
-                    itemRouter.routeItem((ClientPlayerEntity) player, itemStack);
+                    // Route the picked up item with a small delay to ensure it's in the inventory
+                    scheduleItemRouting((ClientPlayerEntity) player, itemStack);
                 }
             }
             return ActionResult.PASS;
+        });
+    }
+    
+    /**
+     * Schedules item routing with a small delay to ensure the item is properly in the inventory
+     */
+    private void scheduleItemRouting(ClientPlayerEntity player, ItemStack itemStack) {
+        MinecraftClient.getInstance().execute(() -> {
+            itemRouter.routeItem(player, itemStack);
         });
     }
 }

@@ -66,7 +66,7 @@ public class LoadoutConfigScreen {
         // Item Category selector
         builder.getOrCreateCategory(Text.literal(slotName)).addEntry(
             entryBuilder.startEnumSelector(
-                Text.literal("Item Category"),
+                Text.translatable("text.autoconfig.loadout.option.itemCategory"),
                 SlotRoutingConfig.ItemCategory.class,
                 config.getItemCategory())
             .setDefaultValue(SlotRoutingConfig.ItemCategory.NONE)
@@ -77,7 +77,7 @@ public class LoadoutConfigScreen {
         // Replacement Mode selector
         builder.getOrCreateCategory(Text.literal(slotName)).addEntry(
             entryBuilder.startEnumSelector(
-                Text.literal("Replacement Mode"),
+                Text.translatable("text.autoconfig.loadout.option.replacementMode"),
                 SlotRoutingConfig.ReplacementMode.class,
                 config.getReplacementMode())
             .setDefaultValue(SlotRoutingConfig.ReplacementMode.NEVER)
@@ -88,7 +88,7 @@ public class LoadoutConfigScreen {
         // Locked toggle
         builder.getOrCreateCategory(Text.literal(slotName)).addEntry(
             entryBuilder.startBooleanToggle(
-                Text.literal("Locked"),
+                Text.translatable("text.autoconfig.loadout.option.locked"),
                 config.isLocked())
             .setDefaultValue(false)
             .setSaveConsumer(newValue -> config.setLocked(newValue))

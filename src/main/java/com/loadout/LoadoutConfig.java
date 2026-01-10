@@ -68,6 +68,9 @@ public class LoadoutConfig implements ConfigData {
             configs[i] = new SlotRoutingConfig(i);
         }
         
+        // Set default configurations for a suggested setup
+        setDefaultConfigurations(configs);
+        
         // Apply loaded configuration data
         for (SlotRoutingConfigData data : slotRoutingConfigs) {
             if (data.slotIndex >= 0 && data.slotIndex < configs.length) {
@@ -76,6 +79,61 @@ public class LoadoutConfig implements ConfigData {
         }
         
         return configs;
+    }
+    
+    /**
+     * Sets default configurations for a suggested setup
+     * Slot 0: Weapon
+     * Slot 1: Food
+     * Slot 2: Tools
+     * Slot 3: Blocks
+     * Slot 4: Offhand (Totem/Chorus)
+     * Slot 5: Potions
+     * Slot 6: Arrows/Bows
+     * Slot 7-8: Miscellaneous
+     * Armor slots: Automatic routing
+     */
+    private void setDefaultConfigurations(SlotRoutingConfig[] configs) {
+        // Hotbar defaults
+        configs[0].setItemCategory(SlotRoutingConfig.ItemCategory.WEAPON);  // Weapon slot
+        configs[0].setReplacementMode(SlotRoutingConfig.ReplacementMode.ALWAYS);
+        
+        configs[1].setItemCategory(SlotRoutingConfig.ItemCategory.FOOD);    // Food slot
+        configs[1].setReplacementMode(SlotRoutingConfig.ReplacementMode.NEVER);
+        
+        configs[2].setItemCategory(SlotRoutingConfig.ItemCategory.TOOL);    // Tool slot
+        configs[2].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
+        
+        configs[3].setItemCategory(SlotRoutingConfig.ItemCategory.BLOCK);   // Building blocks
+        configs[3].setReplacementMode(SlotRoutingConfig.ReplacementMode.NEVER);
+        
+        configs[4].setItemCategory(SlotRoutingConfig.ItemCategory.MISC);    // Offhand utilities (Totems, Chorus Fruit)
+        configs[4].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
+        
+        configs[5].setItemCategory(SlotRoutingConfig.ItemCategory.POTION); // Potions
+        configs[5].setReplacementMode(SlotRoutingConfig.ReplacementMode.NEVER);
+        
+        configs[6].setItemCategory(SlotRoutingConfig.ItemCategory.MISC);    // Arrows/Bows
+        configs[6].setReplacementMode(SlotRoutingConfig.ReplacementMode.NEVER);
+        
+        // Slots 7-8 remain as NONE (flexible slots)
+        
+        // Armor defaults
+        configs[9].setItemCategory(SlotRoutingConfig.ItemCategory.ARMOR);   // Helmet
+        configs[9].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
+        
+        configs[10].setItemCategory(SlotRoutingConfig.ItemCategory.ARMOR);  // Chestplate
+        configs[10].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
+        
+        configs[11].setItemCategory(SlotRoutingConfig.ItemCategory.ARMOR); // Leggings
+        configs[11].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
+        
+        configs[12].setItemCategory(SlotRoutingConfig.ItemCategory.ARMOR);  // Boots
+        configs[12].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
+        
+        // Offhand defaults
+        configs[13].setItemCategory(SlotRoutingConfig.ItemCategory.MISC);    // Offhand
+        configs[13].setReplacementMode(SlotRoutingConfig.ReplacementMode.SAME_TYPE_ONLY);
     }
     
     /**

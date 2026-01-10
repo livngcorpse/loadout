@@ -128,6 +128,36 @@ public class CategoryMapper {
         ITEM_CATEGORY_MAP.put("suspicious_stew", SlotRoutingConfig.ItemCategory.FOOD);
         ITEM_CATEGORY_MAP.put("sweet_berry_bush", SlotRoutingConfig.ItemCategory.FOOD);
         
+        // Weapon items (additional)
+        ITEM_CATEGORY_MAP.put("bow", SlotRoutingConfig.ItemCategory.WEAPON);
+        ITEM_CATEGORY_MAP.put("crossbow", SlotRoutingConfig.ItemCategory.WEAPON);
+        ITEM_CATEGORY_MAP.put("trident", SlotRoutingConfig.ItemCategory.WEAPON);
+        ITEM_CATEGORY_MAP.put("shield", SlotRoutingConfig.ItemCategory.ARMOR); // Shield goes in offhand
+        
+        // Additional tools
+        ITEM_CATEGORY_MAP.put("flint_and_steel", SlotRoutingConfig.ItemCategory.TOOL);
+        ITEM_CATEGORY_MAP.put("shears", SlotRoutingConfig.ItemCategory.TOOL);
+        ITEM_CATEGORY_MAP.put("fishing_rod", SlotRoutingConfig.ItemCategory.TOOL);
+        ITEM_CATEGORY_MAP.put("carrot_on_a_stick", SlotRoutingConfig.ItemCategory.TOOL);
+        ITEM_CATEGORY_MAP.put("warped_fungus_on_a_stick", SlotRoutingConfig.ItemCategory.TOOL);
+        
+        // Utility items
+        ITEM_CATEGORY_MAP.put("ender_pearl", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("ender_eye", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("experience_bottle", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("totem_of_undying", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("spyglass", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("compass", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("clock", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("recovery_compass", SlotRoutingConfig.ItemCategory.MISC);
+        
+        // Ammunition
+        ITEM_CATEGORY_MAP.put("arrow", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("spectral_arrow", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("tipped_arrow", SlotRoutingConfig.ItemCategory.POTION);
+        ITEM_CATEGORY_MAP.put("fire_charge", SlotRoutingConfig.ItemCategory.MISC);
+        ITEM_CATEGORY_MAP.put("snowball", SlotRoutingConfig.ItemCategory.MISC);
+        
         // Potion items
         ITEM_CATEGORY_MAP.put("potion", SlotRoutingConfig.ItemCategory.POTION);
         ITEM_CATEGORY_MAP.put("splash_potion", SlotRoutingConfig.ItemCategory.POTION);

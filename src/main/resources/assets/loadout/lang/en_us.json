@@ -47,5 +47,21 @@
 	
 	"text.autoconfig.loadout.option.considerEnchantments": "Consider Enchantments",
 	"text.autoconfig.loadout.option.enforceSingleItem": "Enforce Single Item",
-	"text.autoconfig.loadout.option.locked": "Locked"
+	"text.autoconfig.loadout.option.locked": "Locked",
+	
+	"text.autoconfig.loadout.option.itemCategory": "Item Category",
+	"text.autoconfig.loadout.option.itemCategory.none": "None",
+	"text.autoconfig.loadout.option.itemCategory.weapon": "Weapon",
+	"text.autoconfig.loadout.option.itemCategory.tool": "Tool",
+	"text.autoconfig.loadout.option.itemCategory.armor": "Armor",
+	"text.autoconfig.loadout.option.itemCategory.food": "Food",
+	"text.autoconfig.loadout.option.itemCategory.block": "Block",
+	"text.autoconfig.loadout.option.itemCategory.potion": "Potion",
+	"text.autoconfig.loadout.option.itemCategory.misc": "Miscellaneous",
+	"text.autoconfig.loadout.option.itemCategory.custom": "Custom",
+	
+	"text.autoconfig.loadout.option.replacementMode": "Replacement Mode",
+	"text.autoconfig.loadout.option.replacementMode.never": "Never Replace",
+	"text.autoconfig.loadout.option.replacementMode.same_type_only": "Same Type Only",
+	"text.autoconfig.loadout.option.replacementMode.always": "Always Replace"
 }

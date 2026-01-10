@@ -171,26 +171,30 @@ public class ItemRouter {
     }
     
     /**
-     * Converts a logical slot index (0-15) to actual slot index in inventory
-     * Logical order: Hotbar 0-8, Armor 0-3, Offhand 14
+     * Converts a logical slot index (0-13) to actual slot index in inventory
+     * Logical order: Hotbar 0-8, Armor 9-12, Offhand 13
+     * Minecraft screen handler slot layout:
+     * - 0-8: Hotbar (bottom row)
+     * - 9-35: Main inventory (3x9 grid, bottom to top, after hotbar)
+     * - 36-39: Armor slots (36=boots, 37=leggings, 38=chestplate, 39=helmet)
+     * - 40: Offhand
      * @param logicalIndex The logical slot index
      * @param inventory The player's inventory
      * @return The actual slot index in the inventory
      */
     private int convertLogicalSlotToActualSlot(int logicalIndex, PlayerInventory inventory) {
-        if (logicalIndex < 9) {
-            // Hotbar slots 0-8 map directly to inventory indices 0-8
+        if (logicalIndex >= 0 && logicalIndex < 9) {
+            // Hotbar slots 0-8 map directly to screen handler indices 0-8
             return logicalIndex;
-        } else if (logicalIndex < 13) {
-            // Armor slots 0-3 (logical 9-12)
-            int armorIndex = logicalIndex - 9;
-            // Actual armor slots in screen handler are after main inventory
-            int hotbarSize = 9;
-            int mainInventorySize = inventory.main.size() - hotbarSize;
-            return hotbarSize + mainInventorySize + armorIndex;
+        } else if (logicalIndex >= 9 && logicalIndex <= 12) {
+            // Armor slots (logical 9-12) map to screen handler indices 36-39
+            // Note: Armor slots are in reverse order: boots(36), leggings(37), chestplate(38), helmet(39)
+            // So logical 9(helmet) -> 39, 10(chestplate) -> 38, 11(leggings) -> 37, 12(boots) -> 36
+            int armorIndex = logicalIndex - 9; // 0=helmet, 1=chestplate, 2=leggings, 3=boots
+            return 39 - armorIndex;
         } else if (logicalIndex == 13) {
-            // Offhand slot (logical 13)
-            return PlayerInventory.OFF_HAND_SLOT;
+            // Offhand slot (logical 13) maps to screen handler index 40
+            return 40; // OFF_HAND_SLOT is 40 in Minecraft
         }
         
         return -1; // Invalid logical index
@@ -207,10 +211,12 @@ public class ItemRouter {
             // Hotbar slots 0-8
             return actualIndex;
         } else if (actualIndex >= 36 && actualIndex <= 39) {
-            // Armor slots (36-39 in screen handler)
-            return 9 + (actualIndex - 36); // Maps to logical 9-12
-        } else if (actualIndex == PlayerInventory.OFF_HAND_SLOT) {
-            // Offhand slot
+            // Armor slots 36-39 map to logical 9-12
+            // Note: Armor slots are in reverse order: boots(36), leggings(37), chestplate(38), helmet(39)
+            // So screen 39(helmet) -> logical 9, 38(chestplate) -> logical 10, 37(leggings) -> logical 11, 36(boots) -> logical 12
+            return 9 + (39 - actualIndex);
+        } else if (actualIndex == 40) { // OFF_HAND_SLOT
+            // Offhand slot 40 maps to logical 13
             return 13;
         }
         
@@ -225,19 +231,19 @@ public class ItemRouter {
      */
     private ItemStack getStackFromSlot(PlayerInventory inventory, int slotIndex) {
         if (slotIndex >= 0 && slotIndex < 9) {
-            // Hotbar slots
+            // Hotbar slots 0-8
             return inventory.getStack(slotIndex);
-        } else if (slotIndex >= 36 && slotIndex <= 39) {
-            // Armor slots
-            int armorIndex = slotIndex - 36;
-            return inventory.armor.get(armorIndex);
-        } else if (slotIndex == PlayerInventory.OFF_HAND_SLOT) {
-            // Offhand slot
-            return inventory.offHand.get(0);
-        } else if (slotIndex >= 9 && slotIndex < 36) {
-            // Main inventory slots (after hotbar)
+        } else if (slotIndex >= 9 && slotIndex <= 35) {
+            // Main inventory slots 9-35 (3x9 grid, bottom to top)
             int mainIndex = slotIndex - 9;
             return inventory.main.get(mainIndex);
+        } else if (slotIndex >= 36 && slotIndex <= 39) {
+            // Armor slots 36-39 (boots, leggings, chestplate, helmet)
+            int armorIndex = 39 - slotIndex; // Reverse the order: 39->0(helmet), 38->1(chestplate), 37->2(leggings), 36->3(boots)
+            return inventory.armor.get(armorIndex);
+        } else if (slotIndex == 40) { // OFF_HAND_SLOT
+            // Offhand slot 40
+            return inventory.offHand.get(0);
         }
         
         return ItemStack.EMPTY; // Invalid slot
