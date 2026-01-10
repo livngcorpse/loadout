@@ -31,9 +31,6 @@ public class ItemSwapper {
         int syncId = screenHandler.syncId;
         int revision = screenHandler.getRevision();
         
-        // Get the current cursor stack for proper packet construction
-        ItemStack cursorStack = screenHandler.getCursorStack();
-        
         // First, pick up the item from the source slot
         ClickSlotC2SPacket pickupPacket = new ClickSlotC2SPacket(
                 syncId,
@@ -41,8 +38,7 @@ public class ItemSwapper {
                 fromSlot,
                 0, // Left click
                 SlotActionType.PICKUP,
-                inventory.getStack(fromSlot).copy(), // Current stack in the slot
-                cursorStack.copy() // Current cursor stack
+                screenHandler.getCursorStack()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupPacket);
@@ -50,12 +46,11 @@ public class ItemSwapper {
         // Then, place the item in the target slot
         ClickSlotC2SPacket placePacket = new ClickSlotC2SPacket(
                 syncId,
-                screenHandler.getRevision(), // Update revision
                 toSlot,
                 0, // Left click
                 SlotActionType.PICKUP,
-                ItemStack.EMPTY, // Expected stack in target (empty since we're placing)
-                screenHandler.getCursorStack().copy() // Stack currently held in cursor
+                screenHandler.getCursorStack(),
+                screenHandler.getRevision() // Update revision
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placePacket);
@@ -82,16 +77,14 @@ public class ItemSwapper {
         // Step 1: Pick up item from slot A
         int syncId = screenHandler.syncId;
         int revision = screenHandler.getRevision();
-        ItemStack cursorStack = screenHandler.getCursorStack();
         
         ClickSlotC2SPacket pickupAPacket = new ClickSlotC2SPacket(
                 syncId,
-                revision,
                 slotA,
                 0, // Left click
                 SlotActionType.PICKUP,
-                inventory.getStack(slotA).copy(),
-                cursorStack.copy()
+                screenHandler.getCursorStack(),
+                revision
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupAPacket);
@@ -99,12 +92,11 @@ public class ItemSwapper {
         // Step 2: Place item A in slot B
         ClickSlotC2SPacket placeAPacket = new ClickSlotC2SPacket(
                 syncId,
-                screenHandler.getRevision(),
                 slotB,
                 0, // Left click
                 SlotActionType.PICKUP,
-                inventory.getStack(slotB).copy(),
-                screenHandler.getCursorStack().copy()
+                screenHandler.getCursorStack(),
+                screenHandler.getRevision()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeAPacket);
@@ -112,12 +104,11 @@ public class ItemSwapper {
         // Step 3: Pick up item from slot B (now in cursor)
         ClickSlotC2SPacket pickupBPacket = new ClickSlotC2SPacket(
                 syncId,
-                screenHandler.getRevision(),
                 slotB,
                 0, // Left click
                 SlotActionType.PICKUP,
-                ItemStack.EMPTY, // Expected: item that was moved from slot A
-                screenHandler.getCursorStack().copy()
+                screenHandler.getCursorStack(),
+                screenHandler.getRevision()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(pickupBPacket);
@@ -125,12 +116,11 @@ public class ItemSwapper {
         // Step 4: Place item B in slot A
         ClickSlotC2SPacket placeBPacket = new ClickSlotC2SPacket(
                 syncId,
-                screenHandler.getRevision(),
                 slotA,
                 0, // Left click
                 SlotActionType.PICKUP,
-                ItemStack.EMPTY, // Expected: item that was moved from slot A
-                screenHandler.getCursorStack().copy()
+                screenHandler.getCursorStack(),
+                screenHandler.getRevision()
         );
         
         MinecraftClient.getInstance().getNetworkHandler().sendPacket(placeBPacket);
@@ -145,22 +135,22 @@ public class ItemSwapper {
      */
     public static int findEmptySlot(PlayerInventory inventory) {
         // Check main inventory (excluding hotbar)
-        for (int i = 9; i < inventory.main.size(); i++) {
-            if (inventory.main.get(i).isEmpty()) {
+        for (int i = 9; i < 36; i++) {
+            if (inventory.getStack(i).isEmpty()) {
                 return i;
             }
         }
         
         // Check hotbar
         for (int i = 0; i < 9; i++) {
-            if (inventory.main.get(i).isEmpty()) {
+            if (inventory.getStack(i).isEmpty()) {
                 return i;
             }
         }
         
         // Check offhand
-        if (inventory.offHand.get(0).isEmpty()) {
-            return PlayerInventory.OFF_HAND_SLOT;
+        if (inventory.getStack(40).isEmpty()) {
+            return 40; // OFF_HAND_SLOT is 40
         }
         
         return -1; // No empty slot found

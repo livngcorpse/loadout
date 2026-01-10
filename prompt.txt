@@ -24,20 +24,17 @@ loadout/
       │     └─ loadout/
       │        ├─ LoadoutClient.java        # Fabric client initializer
       │        ├─ LoadoutConfig.java        # Cloth Config schema
-      │        ├─ SlotProfile.java          # Per-slot rule definition
-      │        ├─ InventoryScanner.java     # Inventory parsing
-      │        ├─ ItemEvaluator.java        # Rule-based item scoring
-      │        ├─ HotbarController.java     # Slot assignment logic
-      │        ├─ ArmorController.java      # Auto armor handling
-      │        ├─ OffhandController.java    # Offhand logic
-      │        ├─ EventListener.java        # Pickup & respawn hooks
+      │        ├─ SlotRoutingConfig.java    # Per-slot routing configuration
+      │        ├─ ItemRouter.java           # Real-time item routing logic
+      │        ├─ ItemMatcher.java          # Item category matching
+      │        ├─ CategoryMapper.java       # Item to category mapping
+      │        ├─ ItemSwapper.java          # Inventory manipulation
+      │        ├─ EventListener.java        # Pickup hooks
       │        └─ ui/
-      │           ├─ LoadoutConfigScreen.java
-      │           └─ SlotEditorWidget.java
+      │           └─ LoadoutConfigScreen.java
       │
       └─ resources/
          ├─ fabric.mod.json
-         ├─ loadout.mixins.json
          └─ assets/
             └─ loadout/
                ├─ lang/
@@ -70,39 +67,23 @@ No default behavior enabled
 
 Loadout automatically:
 
-Organizes the 9-slot hotbar
-
-Equips armor
-
-Sets offhand items
+Routes items to designated slots in real-time
 
 …based entirely on user-defined rules, triggered when:
 
-The player respawns
-
-Items are picked up
-
-Inventory changes (debounced)
+Items are picked up (immediate routing)
 
 A manual hotkey is used
 
 🎛️ Customization Rules (High-Level)
 
-Each hotbar slot is independently configurable:
+Each slot is independently configurable:
 
-Allowed items or item categories
+Item category assignment (Weapon, Tool, Armor, Food, etc.)
 
-Material priority (Netherite, Diamond, etc.)
-
-Durability preference (highest / lowest)
-
-Enchantment influence (on/off or weighted)
-
-Single-item enforcement (e.g. one bed only)
+Replacement mode (Never, Same Type Only, Always)
 
 Slot locking
-
-Armor and offhand follow similar rule logic.
 
 🖥️ Configuration UI Requirements
 
@@ -112,7 +93,7 @@ Slot-based editor
 
 Per-slot rule toggles
 
-No presets or defaults
+Sensible defaults for new users
 
 All behavior is opt-in
 
@@ -122,15 +103,11 @@ Clear visual layout matching the hotbar
 
 🛡️ Safety & UX Rules
 
-No swapping during:
+Minimal safety checks:
 
-Item usage
+No routing when player is dead
 
-Attack animations
-
-Short delay after respawn
-
-Cooldown between reorganizations
+No routing in spectator mode
 
 Manual override keybind
 
@@ -145,7 +122,7 @@ You are an expert Minecraft Fabric mod developer.
 Create a complete, production-ready Fabric CLIENT-SIDE mod named “Loadout” for Minecraft versions 1.20.10 and above.
 
 MOD PURPOSE:
-Loadout automatically organizes the player’s hotbar, equips armor, and assigns offhand items based on fully user-defined rules whenever items are picked up or the player respawns.
+Loadout automatically routes items to designated slots in real-time based on fully user-defined rules whenever items are picked up.
 
 SCOPE & CONSTRAINTS:
 - Client-side only
@@ -153,28 +130,18 @@ SCOPE & CONSTRAINTS:
 - Minecraft 1.20.10+
 - Cloth Config for all configuration
 - No server-side code
-- No default behavior; everything must be opt-in
+- Sensible defaults for new users
 
-HOTBAR SYSTEM:
-- 9 hotbar slots
+ROUTING SYSTEM:
+- Real-time item routing
 - Each slot is independently configurable
 - Slot rules include:
-  - Allowed items or item categories
-  - Material priority
-  - Durability preference
-  - Enchantment consideration
-  - Single-item enforcement
+  - Item category assignment (Weapon, Tool, Armor, Food, etc.)
+  - Replacement mode (Never, Same Type Only, Always)
   - Slot locking
 
-ARMOR & OFFHAND:
-- Automatically equip armor based on user rules
-- Automatically select offhand items
-- Respect durability, material, and enchantment preferences
-
 EVENT TRIGGERS:
-- Player respawn
-- Item pickup
-- Inventory changes (debounced)
+- Item pickup (immediate routing)
 - Manual hotkey activation
 
 CONFIGURATION UI:
@@ -185,9 +152,7 @@ CONFIGURATION UI:
 - Changes apply instantly
 
 UX & SAFETY:
-- Do not swap items during combat or item usage
-- Add cooldowns to prevent flickering
-- Delay execution briefly after respawn
+- Do not route items when player is dead or in spectator mode
 - Never destroy or duplicate items
 
 DELIVERABLES:

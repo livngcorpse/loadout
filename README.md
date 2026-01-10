@@ -1,22 +1,17 @@
 # Loadout Mod
 
-Smart hotbar, armor, and offhand management with fully customizable rules for Minecraft Fabric 1.20.10+.
+Smart real-time item routing system with fully customizable rules for Minecraft Fabric 1.20.10+.
 
 ## Features
 
-- Automatically organizes your 9-slot hotbar based on customizable rules
-- Equips armor automatically based on user-defined preferences
-- Sets offhand items according to your configuration
+- Real-time item routing: Items are immediately directed to their designated slots when picked up
+- Item category-based assignment (Weapons, Tools, Armor, Food, etc.)
+- Replacement mode controls (Never, Same Type Only, Always)
 - Fully configurable through Cloth Config GUI
 - Client-side only - no server-side requirements
-- No default behavior - everything is opt-in
+- Sensible default configurations for new users
 - Safe implementation - never deletes or duplicates items
-- Per-slot item filtering with allowed items list
-- Material priority system (Wood through Netherite)
-- Durability preference (highest/lowest)
-- Enchantment consideration
-- Single-item enforcement
-- Slot locking
+- Slot locking to disable automatic management
 
 ## Installation
 
@@ -42,15 +37,15 @@ Access the configuration screen through Mod Menu or by pressing the configuratio
 
 - **Activation Mode**: Controls when the loadout is automatically organized
   - Manual Only: Only when manually triggered
-  - Respawn Only: Only after respawning
-  - Pickup Only: Only when picking up items
-  - All Events: On respawn, item pickup, and manual activation
+  - Pickup Only: Only when picking up items (recommended for real-time routing)
   
-- **Enable Hotbar Management**: Enable automatic organization of the hotbar
-- **Enable Armor Management**: Enable automatic equipping of armor
-- **Enable Offhand Management**: Enable automatic setting of offhand items
-- **Respawn Delay (Ticks)**: Delay before organizing loadout after respawning
-- **Cooldown (Ticks)**: Minimum time between loadout organizations
+### Slot Configuration
+
+Each hotbar slot, armor slot, and the offhand can be configured individually with:
+
+- **Item Category**: The type of items to route to this slot (Weapon, Tool, Armor, Food, etc.)
+- **Replacement Mode**: When to replace items already in the slot (Never, Same Type Only, Always)
+- **Locked**: Disables automatic management for this slot
 
 ### Slot Configuration
 
@@ -65,17 +60,15 @@ Each hotbar slot, armor slot, and the offhand can be configured individually wit
 
 ## Usage
 
-Once configured, the mod will automatically organize your loadout based on your rules when:
+Once configured, the mod will immediately route items to their designated slots when:
 
-- You respawn (if enabled)
-- You pick up items (if enabled)
-- You manually trigger it with the keybind
+- You pick up items (real-time routing)
+- You manually trigger it with the keybind (for existing items)
 
 ## Safety Features
 
-- Will not swap items during combat or while using items
-- Implements cooldowns to prevent rapid reorganization
-- Delays execution briefly after respawning
+- Will not route items if player is dead or in spectator mode
+- Minimal safety checks to ensure routing doesn't interfere with gameplay
 - Never destroys or duplicates items
 - Respects player state (dead, spectator, creative modes)
 

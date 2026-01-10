@@ -136,34 +136,36 @@ public class ItemRouter {
     }
     
     /**
-     * Finds the slot containing a specific item stack
+     * Finds the first slot containing an item of the same type as the target item
      * @param inventory The player's inventory
-     * @param targetItem The item stack to find
+     * @param targetItem The item to find in the inventory
      * @return The slot index, or -1 if not found
      */
     private int findItemSlot(PlayerInventory inventory, ItemStack targetItem) {
+        if (targetItem.isEmpty()) {
+            return -1;
+        }
+        
         // Check main inventory (hotbar + main)
-        for (int i = 0; i < inventory.main.size(); i++) {
-            ItemStack stack = inventory.main.get(i);
-            if (ItemStack.areEqual(stack, targetItem)) {
+        // In Minecraft's PlayerInventory, slots 0-8 are hotbar, 9-35 are main inventory, 36-39 are armor, 40 is offhand
+        for (int i = 0; i < 36; i++) { // Check main inventory and hotbar (0-35)
+            ItemStack stack = inventory.getStack(i);
+            if (!stack.isEmpty() && stack.getItem() == targetItem.getItem()) {
                 return i;
             }
         }
         
-        // Check offhand
-        ItemStack offhandStack = inventory.offHand.get(0);
-        if (ItemStack.areEqual(offhandStack, targetItem)) {
-            return PlayerInventory.OFF_HAND_SLOT;
+        // Check offhand (which is at index 40 in screen handler but accessed differently)
+        ItemStack offhandStack = inventory.getStack(40); // Actually PlayerInventory.OFF_HAND_SLOT
+        if (!offhandStack.isEmpty() && offhandStack.getItem() == targetItem.getItem()) {
+            return 40; // OFF_HAND_SLOT is 40
         }
         
-        // Check armor slots
-        for (int i = 0; i < inventory.armor.size(); i++) {
-            ItemStack armorStack = inventory.armor.get(i);
-            if (ItemStack.areEqual(armorStack, targetItem)) {
-                // Armor slots in screen handler are indexed after main inventory and hotbar
-                int hotbarSize = 9;
-                int mainInventorySize = inventory.main.size() - hotbarSize;
-                return hotbarSize + mainInventorySize + i;
+        // Check armor slots (36-39)
+        for (int i = 0; i < 4; i++) {
+            ItemStack armorStack = inventory.getStack(36 + i); // Armor slots start at 36
+            if (!armorStack.isEmpty() && armorStack.getItem() == targetItem.getItem()) {
+                return 36 + i;
             }
         }
         
@@ -230,20 +232,16 @@ public class ItemRouter {
      * @return The item stack in that slot
      */
     private ItemStack getStackFromSlot(PlayerInventory inventory, int slotIndex) {
-        if (slotIndex >= 0 && slotIndex < 9) {
-            // Hotbar slots 0-8
+        if (slotIndex >= 0 && slotIndex < inventory.size()) {
+            // Hotbar slots 0-8 and main inventory slots 9-35
             return inventory.getStack(slotIndex);
-        } else if (slotIndex >= 9 && slotIndex <= 35) {
-            // Main inventory slots 9-35 (3x9 grid, bottom to top)
-            int mainIndex = slotIndex - 9;
-            return inventory.main.get(mainIndex);
         } else if (slotIndex >= 36 && slotIndex <= 39) {
             // Armor slots 36-39 (boots, leggings, chestplate, helmet)
-            int armorIndex = 39 - slotIndex; // Reverse the order: 39->0(helmet), 38->1(chestplate), 37->2(leggings), 36->3(boots)
-            return inventory.armor.get(armorIndex);
+            // These are accessed the same way through getStack()
+            return inventory.getStack(slotIndex);
         } else if (slotIndex == 40) { // OFF_HAND_SLOT
             // Offhand slot 40
-            return inventory.offHand.get(0);
+            return inventory.getStack(slotIndex);
         }
         
         return ItemStack.EMPTY; // Invalid slot
